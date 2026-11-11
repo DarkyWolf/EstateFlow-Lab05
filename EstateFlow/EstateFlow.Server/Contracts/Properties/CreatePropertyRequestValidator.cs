@@ -1,14 +1,13 @@
-﻿using EstateFlow.Infrastructure.Data;
+﻿using EstateFlow.Application;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+namespace EstateFlow.Server.Contracts.Properties;
 
-namespace EstateFlow.Server.Contracts.Properties
+public class CreatePropertyRequestValidator : AbstractValidator<CreatePropertyRequest>
 {
-    public class CreatePropertyRequestValidator : AbstractValidator<CreatePropertyRequest>
+    public CreatePropertyRequestValidator(IApplicationDbContext context)
     {
-        public CreatePropertyRequestValidator(EstateFlowDbContext context)
-        {
-            RuleFor(x => x.Code)
+        RuleFor(x => x.Code)
                 .NotEmpty()
                 .MaximumLength(10)
                 .MustAsync(async (code, cancellationToken) =>
@@ -31,6 +30,6 @@ namespace EstateFlow.Server.Contracts.Properties
                 .MustAsync(async (cityId, cancellationToken) =>
                     await context.Cities.AnyAsync(c => c.Id == cityId, cancellationToken))
                 .WithMessage("City with id {PropertyValue} does not exist.");
-        }
+        
     }
 }
